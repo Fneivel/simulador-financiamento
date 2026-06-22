@@ -1198,14 +1198,40 @@ tbody tr.tr td{color:var(--blue)!important;border-bottom:none;}
   /* Container principal sem margens largas */
   .main{ padding:10px 10px 56px; }
 
-  /* Painéis do topo: indicadores e operação em coluna fluida */
+  /* Painéis do topo: indicadores e operação preenchendo toda a largura.
+     Usa grid de 2 colunas iguais para não sobrar espaço à direita. */
   .params-row{ gap:8px; }
   .param-group.monthly,
-  .param-group.operation{ width:100%; }
-  .pf, .pf.op{ min-width:0; flex:1 1 44%; }
+  .param-group.operation{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    align-items:stretch;
+  }
+  .param-group-title{
+    grid-column:1 / -1;       /* título ocupa a linha inteira */
+    margin:0 0 2px;
+  }
+  .pf, .pf.op{
+    min-width:0;
+    width:auto;
+    margin:0;
+  }
   .pf input, .pf.op input,
   #g_icdi, #p_icdi_info,
   .pf.icdi-pf input{ width:100% !important; font-size:16px; }
+  .pf.icdi-pf{ grid-column:1 / -1; }   /* ICDI é longo: linha inteira */
+  .param-note{
+    grid-column:1 / -1;       /* nota ocupa a linha inteira */
+    margin:2px 0 0;
+  }
+  .param-group .btn-param-blue{
+    grid-column:1 / -1;       /* botão Parâmetros: largura total */
+    width:100%;
+    justify-content:center;
+    margin:2px 0 0;
+  }
   .pdiv, .pdiv.op{ display:none; }
 
   /* Tabs: rolagem horizontal com toque, em vez de quebrar */
