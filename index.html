@@ -1257,6 +1257,24 @@ tbody tr.tr td{color:var(--blue)!important;border-bottom:none;}
   .hist-body{ max-height:72vh; }
 }
 
+/* SPLASH / tela de abertura no celular: rolável e com padding menor */
+@media (max-width: 760px){
+  #splash-overlay{ justify-content:flex-start !important; }
+  /* o card interno da splash (primeiro filho div após a faixa decorativa) */
+  #splash-overlay > div[style*="border-radius:20px"]{
+    padding:28px 22px 26px !important;
+    width:92% !important;
+    margin:0 auto;
+  }
+  #splash-overlay h1{ font-size:22px !important; }
+  /* logos da splash não estouram a largura */
+  #splash-overlay img{ max-width:100% !important; height:auto !important; }
+  #splash-overlay img[alt="Banco Randon"]{ height:48px !important; }
+  #splash-overlay img[alt="Randon"]{ height:34px !important; }
+  /* botão Acessar sempre visível e com bom toque */
+  #splash-overlay button{ padding:14px 18px !important; font-size:15px !important; }
+}
+
 /* Telas muito estreitas (< 420px): KPIs e fr em coluna única */
 @media (max-width: 420px){
   .kpis{ grid-template-columns:1fr 1fr; }
@@ -1287,7 +1305,8 @@ tbody tr.tr td{color:var(--blue)!important;border-bottom:none;}
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   transition:opacity .55s ease, transform .55s ease;
-  overflow:hidden;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:24px 0;
 ">
 
   <!-- Faixa azul decorativa topo -->
