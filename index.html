@@ -1249,6 +1249,8 @@ tbody tr.tr td{color:var(--blue)!important;border-bottom:none;}
 
   /* Campos com font 16px evita zoom forçado do Safari iOS */
   .field input, .field select{ font-size:16px; padding:9px 10px; }
+  /* Inputs de data não podem estourar o card (box-sizing + largura total) */
+  .field input[type="date"]{ box-sizing:border-box; width:100%; max-width:100%; font-size:16px; }
   .fr{ grid-template-columns:1fr 1fr; }
 
   /* KPIs em 2 colunas no celular */
@@ -1863,8 +1865,8 @@ function entrarSimFIN() {
                 <div class="field" style="margin-bottom:10px">
           <label>Data da Simulação</label>
           <input type="date" id="tfb_data" value="" onchange="calcTFB()"
-            style="width:100%;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
-                   border-radius:6px;color:var(--text);font-family:inherit;font-size:13px;">
+            style="width:100%;box-sizing:border-box;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
+                   border-radius:6px;color:var(--text);font-family:inherit;font-size:16px;">
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="tfb_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcTFB()" onblur="formatDecimalInput(this);calcTFB()" onchange="formatDecimalInput(this);calcTFB()"></div>
@@ -1929,8 +1931,8 @@ function entrarSimFIN() {
                 <div class="field" style="margin-bottom:10px">
           <label>Data da Simulação</label>
           <input type="date" id="selic_data" value="" onchange="calcSELIC()"
-            style="width:100%;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
-                   border-radius:6px;color:var(--text);font-family:inherit;font-size:13px;">
+            style="width:100%;box-sizing:border-box;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
+                   border-radius:6px;color:var(--text);font-family:inherit;font-size:16px;">
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="selic_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcSELIC()" onblur="formatDecimalInput(this);calcSELIC()" onchange="formatDecimalInput(this);calcSELIC()"></div>
@@ -1988,8 +1990,8 @@ function entrarSimFIN() {
                 <div class="field" style="margin-bottom:10px">
           <label>Data da Simulação</label>
           <input type="date" id="tlp_data" value="" onchange="calcTLP()"
-            style="width:100%;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
-                   border-radius:6px;color:var(--text);font-family:inherit;font-size:13px;">
+            style="width:100%;box-sizing:border-box;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
+                   border-radius:6px;color:var(--text);font-family:inherit;font-size:16px;">
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="tlp_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcTLP()" onblur="formatDecimalInput(this);calcTLP()" onchange="formatDecimalInput(this);calcTLP()"></div>
