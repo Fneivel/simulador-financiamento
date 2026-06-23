@@ -1249,12 +1249,16 @@ tbody tr.tr td{color:var(--blue)!important;border-bottom:none;}
 
   /* Campos com font 16px evita zoom forçado do Safari iOS */
   .field input, .field select{ font-size:16px; padding:9px 10px; }
-  /* Inputs de data idênticos aos demais campos (mesma altura do select Modalidade) */
+  /* Inputs de data idênticos aos demais campos: mesma fonte, padding e borda,
+     com min-height de uma linha para o iOS não colapsar a altura quando vazio. */
   .field input[type="date"]{
     box-sizing:border-box; width:100%; max-width:100%;
-    font-size:16px; padding:9px 10px;
-    height:auto; min-height:0; line-height:normal;
+    font-size:16px; padding:9px 12px;
+    line-height:normal; min-height:calc(1.2em + 18px + 3px);
     -webkit-appearance:none; appearance:none;
+  }
+  .field input[type="date"]::-webkit-date-and-time-value{
+    text-align:left; margin:0;
   }
   .fr{ grid-template-columns:1fr 1fr; }
 
