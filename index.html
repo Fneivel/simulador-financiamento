@@ -1249,8 +1249,13 @@ tbody tr.tr td{color:var(--blue)!important;border-bottom:none;}
 
   /* Campos com font 16px evita zoom forçado do Safari iOS */
   .field input, .field select{ font-size:16px; padding:9px 10px; }
-  /* Inputs de data não podem estourar o card (box-sizing + largura total) */
-  .field input[type="date"]{ box-sizing:border-box; width:100%; max-width:100%; font-size:16px; }
+  /* Inputs de data idênticos aos demais campos (mesma altura do select Modalidade) */
+  .field input[type="date"]{
+    box-sizing:border-box; width:100%; max-width:100%;
+    font-size:16px; padding:9px 10px;
+    height:auto; min-height:0; line-height:normal;
+    -webkit-appearance:none; appearance:none;
+  }
   .fr{ grid-template-columns:1fr 1fr; }
 
   /* KPIs em 2 colunas no celular */
@@ -1864,9 +1869,7 @@ function entrarSimFIN() {
         <div class="card-hd"><span class="ca" style="background:#3B82F6"></span>FINAME TFB/TFC</div>
                 <div class="field" style="margin-bottom:10px">
           <label>Data da Simulação</label>
-          <input type="date" id="tfb_data" value="" onchange="calcTFB()"
-            style="width:100%;box-sizing:border-box;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
-                   border-radius:6px;color:var(--text);font-family:inherit;font-size:16px;">
+          <input type="date" id="tfb_data" value="" onchange="calcTFB()">
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="tfb_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcTFB()" onblur="formatDecimalInput(this);calcTFB()" onchange="formatDecimalInput(this);calcTFB()"></div>
@@ -1930,9 +1933,7 @@ function entrarSimFIN() {
         <div class="card-hd"><span class="ca" style="background:#0D9488"></span>FINAME SELIC-LCD</div>
                 <div class="field" style="margin-bottom:10px">
           <label>Data da Simulação</label>
-          <input type="date" id="selic_data" value="" onchange="calcSELIC()"
-            style="width:100%;box-sizing:border-box;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
-                   border-radius:6px;color:var(--text);font-family:inherit;font-size:16px;">
+          <input type="date" id="selic_data" value="" onchange="calcSELIC()">
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="selic_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcSELIC()" onblur="formatDecimalInput(this);calcSELIC()" onchange="formatDecimalInput(this);calcSELIC()"></div>
@@ -1989,9 +1990,7 @@ function entrarSimFIN() {
         <div class="card-hd"><span class="ca" style="background:#7C3AED"></span>FINAME TLP</div>
                 <div class="field" style="margin-bottom:10px">
           <label>Data da Simulação</label>
-          <input type="date" id="tlp_data" value="" onchange="calcTLP()"
-            style="width:100%;box-sizing:border-box;padding:7px 10px;background:var(--s2);border:1.5px solid var(--border);
-                   border-radius:6px;color:var(--text);font-family:inherit;font-size:16px;">
+          <input type="date" id="tlp_data" value="" onchange="calcTLP()">
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="tlp_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcTLP()" onblur="formatDecimalInput(this);calcTLP()" onchange="formatDecimalInput(this);calcTLP()"></div>
@@ -2404,12 +2403,13 @@ function prepareBlankSelect(id, placeholder){
   el.value='';
 }
 function initializeBlankSimulations(){
-  const blankInputIds=['tfb_data','tfb_bem','tfb_pct','tfb_prazo','tfb_tco','tfb_tfb_input','tfb_sif_input',
-    'selic_data','selic_bem','selic_pct','selic_prazo','selic_tco','selic_sif_input',
-    'tlp_data','tlp_bem','tlp_pct','tlp_prazo','tlp_tco','tlp_sif_input',
-    'cdc_data','cdc_bem','cdc_pct','cdc_taxa','cdc_prazo','cdc_tco',
-    'cdcp_data','cdcp_bem','cdcp_pct','cdcp_spread','cdcp_prazo','cdcp_tco'];
+  const blankInputIds=['tfb_bem','tfb_pct','tfb_prazo','tfb_tco','tfb_tfb_input','tfb_sif_input',
+    'selic_bem','selic_pct','selic_prazo','selic_tco','selic_sif_input',
+    'tlp_bem','tlp_pct','tlp_prazo','tlp_tco','tlp_sif_input',
+    'cdc_bem','cdc_pct','cdc_taxa','cdc_prazo','cdc_tco',
+    'cdcp_bem','cdcp_pct','cdcp_spread','cdcp_prazo','cdcp_tco'];
   blankInputIds.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['tfb_data','selic_data','tlp_data','cdc_data','cdcp_data'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=todayISO(); });
   ['tfb_sf','tfb_sp','selic_sf','selic_sp','tlp_sf','tlp_sp','cdc_iof_i','cdc_sf','cdc_sp','cdcp_iof_i','cdcp_sf','cdcp_sp'].forEach(id=>{ const el=document.getElementById(id); if(el) el.checked=false; });
   [['tfb_carencia','Selecione a carência'],['tfb_porte','Selecione o porte'],
    ['selic_carencia','Selecione a carência'],['selic_porte','Selecione o porte'],
@@ -3330,7 +3330,7 @@ function limparTFB(){
   document.getElementById('tfb_pct').value='';
   document.getElementById('tfb_prazo').value='';
   document.getElementById('tfb_carencia').value='';
-  document.getElementById('tfb_data').value='';
+  document.getElementById('tfb_data').value=todayISO();
   document.getElementById('tfb_modal').selectedIndex=0;
   document.getElementById('tfb_porte').selectedIndex=0;
   document.getElementById('tfb_tfb_input').value='';
@@ -3348,7 +3348,7 @@ function limparSELIC(){
   document.getElementById('selic_pct').value='';
   document.getElementById('selic_prazo').value='';
   document.getElementById('selic_carencia').value='';
-  document.getElementById('selic_data').value='';
+  document.getElementById('selic_data').value=todayISO();
   document.getElementById('selic_porte').selectedIndex=0;
   document.getElementById('selic_sif_input').value='';
   document.getElementById('selic_tco').value='';
@@ -3365,7 +3365,7 @@ function limparTLP(){
   document.getElementById('tlp_pct').value='';
   document.getElementById('tlp_prazo').value='';
   document.getElementById('tlp_carencia').value='';
-  document.getElementById('tlp_data').value='';
+  document.getElementById('tlp_data').value=todayISO();
   document.getElementById('tlp_porte').selectedIndex=0;
   document.getElementById('tlp_sif_input').value='';
   document.getElementById('tlp_tco').value='';
@@ -4948,7 +4948,7 @@ function initializeSimulationDefaults(){
     'cdcp_bem','cdcp_pct','cdcp_spread','cdcp_prazo','cdcp_tco'
   ];
   numericBlankIds.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  ['tfb_data','selic_data','tlp_data','cdc_data','cdcp_data'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['tfb_data','selic_data','tlp_data','cdc_data','cdcp_data'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=todayISO(); });
   ['tfb_carencia','selic_carencia','tlp_carencia','cdc_car','cdcp_car'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value='0'; });
   ['tfb_sf','tfb_sp','selic_sf','selic_sp','tlp_sf','tlp_sp','cdc_sf','cdc_sp','cdc_iof_i','cdcp_sf','cdcp_sp','cdcp_iof_i'].forEach(id=>{ const el=document.getElementById(id); if(el) el.checked=false; });
   ['result-tfb','result-selic','result-tlp','result-cdcpre','result-cdcpos'].forEach(id=>{
