@@ -1646,55 +1646,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
   *{ transition:none !important; animation:none !important; }
 }
 
-/* ===== INJECTED v2: full-width blue panel + tab grid on mobile ===== */
-@media (max-width: 760px){
-  /* Painel azul (Indicadores) e abas vão até a borda da tela */
-  .main{ padding-left:0 !important; padding-right:0 !important; }
-  .params-row,
-  .tabs-wrap{
-    margin-left:0 !important;
-    margin-right:0 !important;
-    border-radius:0 !important;
-    border-left:none !important;
-    border-right:none !important;
-  }
-  .param-group.monthly,
-  .param-group.operation{
-    border-radius:0 !important;
-    border-left:none !important;
-    border-right:none !important;
-    padding-left:14px !important;
-    padding-right:14px !important;
-  }
-  /* Conteúdo das demais seções continua com respiro lateral */
-  .panel{ padding-left:12px; padding-right:12px; }
-
-  /* Abas: grid 2 colunas, todas visíveis sem scroll horizontal cortando */
-  .tabs-wrap{
-    display:grid !important;
-    grid-template-columns:1fr 1fr;
-    gap:6px !important;
-    overflow:visible !important;
-    padding:8px !important;
-  }
-  .tab{
-    flex:initial !important;
-    min-width:0 !important;
-    width:100% !important;
-    padding:11px 8px !important;
-    font-size:12px !important;
-    white-space:normal !important;
-    line-height:1.15;
-    min-height:44px;
-  }
-  /* Última aba sozinha ocupa a linha inteira para evitar buraco */
-  .tab:last-child:nth-child(odd){ grid-column:1 / -1; }
-}
-
-@media (max-width: 420px){
-  .tab{ font-size:11.5px !important; padding:10px 6px !important; }
-}
-
 </style>
 </head>
 <body>
@@ -1917,10 +1868,10 @@ function entrarSimFIN() {
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="tfb_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcTFB()" onblur="formatDecimalInput(this);calcTFB()" onchange="formatDecimalInput(this);calcTFB()"></div>
-          <div class="field"><label>% Financiado</label><input type="number" id="tfb_pct" value="" min="1" max="100" oninput="calcTFB()"></div>
+          <div class="field"><label>% Financiado</label><input type="number" id="tfb_pct" inputmode="decimal" value="" min="1" max="100" oninput="calcTFB()"></div>
         </div>
         <div class="fr">
-          <div class="field"><label>Prazo (meses)</label><input type="number" id="tfb_prazo" value="" min="1" max="63" oninput="calcTFB()"></div>
+          <div class="field"><label>Prazo (meses)</label><input type="number" id="tfb_prazo" inputmode="numeric" value="" min="1" max="63" oninput="calcTFB()"></div>
           <div class="field"><label>Carência (meses)</label>
             <select id="tfb_carencia" onchange="calcTFB()">
               <option value="0" selected>0 meses</option><option value="3">3 meses</option>
@@ -1945,8 +1896,8 @@ function entrarSimFIN() {
           </select>
         </div>
         <div class="fr">
-          <div class="field"><label>TFB/TFC a.a. (%)</label><input type="number" id="tfb_tfb_input" value="" step="0.01" oninput="calcTFB()"><div class="fn">Custo financeiro da operação</div></div>
-          <div class="field"><label>Spread IF a.a. (%)</label><input type="number" id="tfb_sif_input" value="" step="0.01" oninput="calcTFB()"></div>
+          <div class="field"><label>TFB/TFC a.a. (%)</label><input type="number" id="tfb_tfb_input" inputmode="decimal" value="" step="0.01" oninput="calcTFB()"><div class="fn">Custo financeiro da operação</div></div>
+          <div class="field"><label>Spread IF a.a. (%)</label><input type="number" id="tfb_sif_input" inputmode="decimal" value="" step="0.01" oninput="calcTFB()"></div>
         </div>
         <div class="fr">
           <div class="field"><label>Spread BNDES</label><div id="tfb_sbndes_d" class="fd">—</div></div>
@@ -1983,10 +1934,10 @@ function entrarSimFIN() {
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="selic_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcSELIC()" onblur="formatDecimalInput(this);calcSELIC()" onchange="formatDecimalInput(this);calcSELIC()"></div>
-          <div class="field"><label>% Financiado</label><input type="number" id="selic_pct" value="" oninput="calcSELIC()"></div>
+          <div class="field"><label>% Financiado</label><input type="number" id="selic_pct" inputmode="decimal" value="" oninput="calcSELIC()"></div>
         </div>
         <div class="fr">
-          <div class="field"><label>Prazo (meses)</label><input type="number" id="selic_prazo" value="" min="1" max="63" oninput="calcSELIC()"></div>
+          <div class="field"><label>Prazo (meses)</label><input type="number" id="selic_prazo" inputmode="numeric" value="" min="1" max="63" oninput="calcSELIC()"></div>
           <div class="field"><label>Carência (meses)</label>
             <select id="selic_carencia" onchange="calcSELIC()">
               <option value="0" selected>0 meses</option><option value="3">3 meses</option>
@@ -2005,7 +1956,7 @@ function entrarSimFIN() {
           </select>
         </div>
         <div class="fr">
-          <div class="field"><label>Spread IF a.a. (%)</label><input type="number" id="selic_sif_input" value="" step="0.01" oninput="calcSELIC()"></div>
+          <div class="field"><label>Spread IF a.a. (%)</label><input type="number" id="selic_sif_input" inputmode="decimal" value="" step="0.01" oninput="calcSELIC()"></div>
           <div class="field"><label>Spread BNDES</label><div id="selic_sbndes_d" class="fd">—</div></div>
         </div>
         <div class="fr">
@@ -2042,10 +1993,10 @@ function entrarSimFIN() {
         </div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="tlp_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcTLP()" onblur="formatDecimalInput(this);calcTLP()" onchange="formatDecimalInput(this);calcTLP()"></div>
-          <div class="field"><label>% Financiado</label><input type="number" id="tlp_pct" value="" oninput="calcTLP()"></div>
+          <div class="field"><label>% Financiado</label><input type="number" id="tlp_pct" inputmode="decimal" value="" oninput="calcTLP()"></div>
         </div>
         <div class="fr">
-          <div class="field"><label>Prazo (meses)</label><input type="number" id="tlp_prazo" value="" min="1" max="63" oninput="calcTLP()"></div>
+          <div class="field"><label>Prazo (meses)</label><input type="number" id="tlp_prazo" inputmode="numeric" value="" min="1" max="63" oninput="calcTLP()"></div>
           <div class="field"><label>Carência (meses)</label>
             <select id="tlp_carencia" onchange="calcTLP()">
               <option value="0" selected>0 meses</option><option value="3">3 meses</option>
@@ -2064,7 +2015,7 @@ function entrarSimFIN() {
           </select>
         </div>
         <div class="fr">
-          <div class="field"><label>Spread IF a.a. (%)</label><input type="number" id="tlp_sif_input" value="" step="0.01" oninput="calcTLP()"></div>
+          <div class="field"><label>Spread IF a.a. (%)</label><input type="number" id="tlp_sif_input" inputmode="decimal" value="" step="0.01" oninput="calcTLP()"></div>
           <div class="field"><label>Spread BNDES</label><div id="tlp_sbndes_d" class="fd">—</div></div>
         </div>
         <div class="fr">
@@ -2101,11 +2052,11 @@ function entrarSimFIN() {
         <div class="field"><label>Modalidade</label><select id="cdc_modal" onchange="calcCDCpre()"><option value="CDC">CDC</option><option value="GIRO">GIRO</option></select></div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="cdc_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcCDCpre()" onblur="formatDecimalInput(this);calcCDCpre()" onchange="formatDecimalInput(this);calcCDCpre()"></div>
-          <div class="field"><label>% Financiado</label><input type="number" id="cdc_pct" value="" oninput="calcCDCpre()"></div>
+          <div class="field"><label>% Financiado</label><input type="number" id="cdc_pct" inputmode="decimal" value="" oninput="calcCDCpre()"></div>
         </div>
         <div class="fr">
-          <div class="field"><label>Taxa de Juros a.m. (%)</label><input type="number" id="cdc_taxa" value="" step="0.01" oninput="calcCDCpre()"></div>
-          <div class="field"><label>Prazo (meses)</label><input type="number" id="cdc_prazo" value="" min="1" max="60" oninput="calcCDCpre()"></div>
+          <div class="field"><label>Taxa de Juros a.m. (%)</label><input type="number" id="cdc_taxa" inputmode="decimal" value="" step="0.01" oninput="calcCDCpre()"></div>
+          <div class="field"><label>Prazo (meses)</label><input type="number" id="cdc_prazo" inputmode="numeric" value="" min="1" max="60" oninput="calcCDCpre()"></div>
         </div>
         <div class="field"><label>Carência (meses)</label>
             <select id="cdc_car" onchange="calcCDCpre()"><option value="0" selected>0 meses</option><option value="3">3 meses</option><option value="6">6 meses</option></select>
@@ -2141,11 +2092,11 @@ function entrarSimFIN() {
         <div class="field"><label>Modalidade</label><select id="cdcp_modal" onchange="calcCDCpos()"><option value="CDC">CDC</option><option value="GIRO">GIRO</option></select></div>
         <div class="fr">
           <div class="field"><label>Valor do Bem (R$)</label><input type="text" id="cdcp_bem" value="" inputmode="decimal" oninput="handleMoneyInput(this);calcCDCpos()" onblur="formatDecimalInput(this);calcCDCpos()" onchange="formatDecimalInput(this);calcCDCpos()"></div>
-          <div class="field"><label>% Financiado</label><input type="number" id="cdcp_pct" value="" oninput="calcCDCpos()"></div>
+          <div class="field"><label>% Financiado</label><input type="number" id="cdcp_pct" inputmode="decimal" value="" oninput="calcCDCpos()"></div>
         </div>
         <div class="fr">
-          <div class="field"><label>Taxa de Juros a.m. (%)</label><input type="number" id="cdcp_spread" value="" step="0.01" oninput="calcCDCpos()"><div class="fn">Spread fixo + CDI</div></div>
-          <div class="field"><label>Prazo (meses)</label><input type="number" id="cdcp_prazo" value="" min="1" max="60" oninput="calcCDCpos()"></div>
+          <div class="field"><label>Taxa de Juros a.m. (%)</label><input type="number" id="cdcp_spread" inputmode="decimal" value="" step="0.01" oninput="calcCDCpos()"><div class="fn">Spread fixo + CDI</div></div>
+          <div class="field"><label>Prazo (meses)</label><input type="number" id="cdcp_prazo" inputmode="numeric" value="" min="1" max="60" oninput="calcCDCpos()"></div>
         </div>
         <div class="field"><label>Carência (meses)</label>
             <select id="cdcp_car" onchange="calcCDCpos()"><option value="0" selected>0 meses</option><option value="3">3 meses</option><option value="6">6 meses</option></select>
