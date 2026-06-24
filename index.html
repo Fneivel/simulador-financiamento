@@ -4809,6 +4809,38 @@ async function getCurrentPdfFile(){
   const name = getPdfSimulationName(key, r);
   return new File([blob], `simulacao_${getPdfFileSafeName(name)}.pdf`, {type:'application/pdf'});
 }
+
+/* Compartilha o PDF da simulação de forma robusta no celular.
+   - Tenta a folha de compartilhamento nativa com o ARQUIVO (Web Share Level 2).
+   - Se o aparelho não suporta anexar arquivo, baixa o PDF e avisa o usuário,
+     em vez de abrir o WhatsApp só com texto (que ia sem o anexo). */
+async function sharePdfRobusto(titulo){
+  let file;
+  try{
+    file = await getCurrentPdfFile();
+  }catch(e){
+    alert('Não foi possível gerar o PDF. Tente novamente.');
+    return;
+  }
+  // Tenta compartilhamento nativo de arquivo
+  if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+    try{
+      await navigator.share({files:[file], title:titulo || 'Simulação do financiamento'});
+      return; // sucesso
+    }catch(err){
+      // Usuário cancelou: encerra sem fazer nada
+      if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
+      // Outro erro: cai para o download abaixo
+    }
+  }
+  // Fallback: baixa o PDF e orienta o usuário a anexá-lo manualmente
+  try{
+    exportPDF();
+    alert('O compartilhamento direto não é suportado neste aparelho.\n\nO PDF da simulação foi baixado. Abra o WhatsApp ou o e-mail e anexe o arquivo "simulacao_...pdf" da pasta Downloads.');
+  }catch(_e){
+    alert('Não foi possível compartilhar neste aparelho.');
+  }
+}
 function getNormalComparisonPdfMetrics(k, r){
   let parcelas = [];
   if(r && r.data && Array.isArray(r.data.rows) && ['selic','tlp','cdcpos'].includes(k)){
@@ -4873,84 +4905,18 @@ function exportProjectedComparisonPDF(){
   buildComparisonPdf('Quadro Comparativo Projetado', 'quadro_comparativo_projetado.pdf', true);
 }
 async function shareSimWA(label, totalPago, vfProd){
-  const msg = `Olá!\nConforme combinado, estou compartilhando a simulação do financiamento para sua avaliação.\nFico à disposição para qualquer dúvida ou ajuste necessário.`;
-  try{
-    const file = await getCurrentPdfFile();
-    if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      await navigator.share({files:[file], title:`Simulação ${label || ''}`.trim()});
-      return;
-    }
-    exportPDF();
-    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-  }catch(err){
-    if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
-    // Erro real (ex.: "Permission denied" em alguns Androids): usa o fallback.
-    try{
-      exportPDF();
-      window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-    }catch(_e){
-      alert('Não foi possível compartilhar. O PDF foi gerado para download.');
-    }
-  }
+  await sharePdfRobusto(`Simulação ${label || ''}`.trim());
 }
 
 async function shareSimEM(label, totalPago, vfProd){
-  const msg = 'Olá,\nSegue em anexo a simulação do financiamento para sua análise.\nEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
-  try{
-    const file = await getCurrentPdfFile();
-    if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      await navigator.share({files:[file], title:`Simulação ${label || ''}`.trim()});
-      return;
-    }
-    exportPDF();
-    const body = 'Olá,%0D%0ASegue em anexo a simulação do financiamento para sua análise.%0D%0AEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
-    window.location.href='mailto:?subject='+encodeURIComponent('Simulação do financiamento')+'&body='+body;
-  }catch(err){
-    if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
-    // Erro real (ex.: "Permission denied" em alguns Androids): usa o fallback.
-    try{
-      exportPDF();
-      const body = 'Olá,%0D%0ASegue em anexo a simulação do financiamento para sua análise.%0D%0AEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
-      window.location.href='mailto:?subject='+encodeURIComponent('Simulação do financiamento')+'&body='+body;
-    }catch(_e){
-      alert('Não foi possível compartilhar por e-mail. O PDF foi gerado para download.');
-    }
-  }
+  await sharePdfRobusto(`Simulação ${label || ''}`.trim());
 }
 
 async function shareWA(){
-  const msg='Olá!\nConforme combinado, estou compartilhando a simulação do financiamento para sua avaliação.\nFico à disposição para qualquer dúvida ou ajuste necessário.';
-  try{
-    const file = await getCurrentPdfFile();
-    if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      await navigator.share({files:[file], title:'Simulação do financiamento'});
-      return;
-    }
-    exportPDF();
-    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-  }catch(err){
-    if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
-    exportPDF();
-    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-  }
+  await sharePdfRobusto('Simulação do financiamento');
 }
 async function shareEM(){
-  const msg = 'Olá,\nSegue em anexo a simulação do financiamento para sua análise.\nEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
-  try{
-    const file = await getCurrentPdfFile();
-    if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      await navigator.share({files:[file], title:'Simulação do financiamento'});
-      return;
-    }
-    exportPDF();
-    const body = 'Olá,%0D%0ASegue em anexo a simulação do financiamento para sua análise.%0D%0AEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
-    window.location.href='mailto:?subject='+encodeURIComponent('Simulação do financiamento')+'&body='+body;
-  }catch(err){
-    if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
-    exportPDF();
-    const body = 'Olá,%0D%0ASegue em anexo a simulação do financiamento para sua análise.%0D%0AEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
-    window.location.href='mailto:?subject='+encodeURIComponent('Simulação do financiamento')+'&body='+body;
-  }
+  await sharePdfRobusto('Simulação do financiamento');
 }
 
 
