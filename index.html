@@ -1181,6 +1181,15 @@ tbody tr.tr td{color:var(--blue)!important;border-bottom:none;}
   html{ font-size:14px; -webkit-text-size-adjust:100%; }
   body{ overflow-x:hidden; }
 
+  /* Garante que o container e os blocos do topo usem toda a largura da tela.
+     !important e flex-basis cobrem uma quirk do Safari iOS com flex-wrap. */
+  .main{ width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  .header{ width:100% !important; box-sizing:border-box; }
+  .params-row{ width:100% !important; box-sizing:border-box; flex-wrap:nowrap !important; }
+  .param-group.monthly{ width:100% !important; box-sizing:border-box; flex:1 1 100% !important; }
+  .tabs-wrap{ width:100% !important; box-sizing:border-box; }
+  .card, .grid-sim, .grid-sim > *{ width:100% !important; box-sizing:border-box; }
+
   /* Header compacto e empilhável */
   .header{
     height:auto; min-height:60px;
@@ -4874,6 +4883,7 @@ async function shareSimWA(label, totalPago, vfProd){
     exportPDF();
     window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
   }catch(err){
+    if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
     alert(err.message || 'Não foi possível preparar o compartilhamento.');
   }
 }
@@ -4890,6 +4900,7 @@ async function shareSimEM(label, totalPago, vfProd){
     const body = 'Olá,%0D%0ASegue em anexo a simulação do financiamento para sua análise.%0D%0AEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
     window.location.href='mailto:?subject='+encodeURIComponent('Simulação do financiamento')+'&body='+body;
   }catch(err){
+    if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
     alert(err.message || 'Não foi possível preparar o compartilhamento por e-mail.');
   }
 }
@@ -4905,6 +4916,7 @@ async function shareWA(){
     exportPDF();
     window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
   }catch(err){
+    if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
     exportPDF();
     window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
   }
@@ -4921,6 +4933,7 @@ async function shareEM(){
     const body = 'Olá,%0D%0ASegue em anexo a simulação do financiamento para sua análise.%0D%0AEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
     window.location.href='mailto:?subject='+encodeURIComponent('Simulação do financiamento')+'&body='+body;
   }catch(err){
+    if(err && (err.name === 'AbortError' || /cancel|abort/i.test(err.message || ''))) return;
     exportPDF();
     const body = 'Olá,%0D%0ASegue em anexo a simulação do financiamento para sua análise.%0D%0AEm caso de dúvidas ou necessidade de ajustes, fico à disposição.';
     window.location.href='mailto:?subject='+encodeURIComponent('Simulação do financiamento')+'&body='+body;
