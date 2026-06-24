@@ -4407,9 +4407,23 @@ function addPdfHeader(doc, subtitle){
   const logos = document.querySelectorAll('.header-logos img');
   // PDF: logos no mesmo tamanho; Rands alinhado à direita.
   const logoW = 30, logoH = 9.2;
-  if(logos[0]){ try{ doc.addImage(logos[0].src, 'JPEG', 14, 6.5, logoW, logoH); }catch(e){} }
+  // Reduz a resolução do logo para um JPEG leve, evitando PDFs de vários MB.
+  const shrinkLogo = (img, maxW) => {
+    try{
+      const scale = maxW / (img.naturalWidth || img.width || maxW);
+      const w = Math.max(1, Math.round((img.naturalWidth || img.width || maxW) * Math.min(1, scale)));
+      const h = Math.max(1, Math.round((img.naturalHeight || img.height || 1) * Math.min(1, scale)));
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      return c.toDataURL('image/jpeg', 0.82);
+    }catch(e){ return img.src; }
+  };
+  if(logos[0]){ try{ doc.addImage(shrinkLogo(logos[0], 280), 'JPEG', 14, 6.5, logoW, logoH); }catch(e){} }
   if(logos[1]){
-    try{ doc.addImage(logos[1].src, 'JPEG', pageW-14-logoW, 6.5, logoW, logoH); }
+    try{ doc.addImage(shrinkLogo(logos[1], 280), 'JPEG', pageW-14-logoW, 6.5, logoW, logoH); }
     catch(e){ try{ doc.addImage(logos[1].src, 'PNG', pageW-14-logoW, 6.5, logoW, logoH); }catch(_e){} }
   }
   doc.setDrawColor(27,79,138); doc.setLineWidth(0.6); doc.line(14, 20, pageW-14, 20);
@@ -4669,7 +4683,7 @@ function buildCurrentSimulationPdfDoc(){
   if(!key || !simResults[key]){ throw new Error('Abra a modalidade simulada que deseja exportar.'); }
   const r = simResults[key];
   const pdfModalName = getPdfSimulationName(key, r);
-  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
   const today = new Date().toLocaleDateString('pt-BR');
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
@@ -4868,7 +4882,7 @@ function buildComparisonPdf(title, filename, projected=false){
   const {jsPDF} = typeof jsPDFLib.jsPDF !== 'undefined' ? jsPDFLib : {jsPDF: jsPDFLib};
   const keys = Object.keys(simResults);
   if(!keys.length){ alert('Nenhuma simulação disponível para comparar.'); return; }
-  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
   const today = new Date().toLocaleDateString('pt-BR');
   addPdfHeader(doc, `${title} • Gerado em ${today}`);
   let y = 42;
