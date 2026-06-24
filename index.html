@@ -4877,7 +4877,7 @@ async function shareSimWA(label, totalPago, vfProd){
   try{
     const file = await getCurrentPdfFile();
     if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      await navigator.share({title:`Simulação ${label || ''}`.trim(), text:msg, files:[file]});
+      await navigator.share({files:[file], title:`Simulação ${label || ''}`.trim()});
       return;
     }
     exportPDF();
@@ -4899,7 +4899,7 @@ async function shareSimEM(label, totalPago, vfProd){
   try{
     const file = await getCurrentPdfFile();
     if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      await navigator.share({title:`Simulação ${label || ''}`.trim(), text:msg, files:[file]});
+      await navigator.share({files:[file], title:`Simulação ${label || ''}`.trim()});
       return;
     }
     exportPDF();
@@ -4923,7 +4923,7 @@ async function shareWA(){
   try{
     const file = await getCurrentPdfFile();
     if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      await navigator.share({title:'Simulação do financiamento', text:msg, files:[file]});
+      await navigator.share({files:[file], title:'Simulação do financiamento'});
       return;
     }
     exportPDF();
@@ -4939,7 +4939,7 @@ async function shareEM(){
   try{
     const file = await getCurrentPdfFile();
     if(navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
-      await navigator.share({title:'Simulação do financiamento', text:msg, files:[file]});
+      await navigator.share({files:[file], title:'Simulação do financiamento'});
       return;
     }
     exportPDF();
